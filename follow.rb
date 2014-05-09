@@ -21,6 +21,9 @@ while i < 15 do
       puts "Already following: #{id}"
       msg.delete
     end
+  rescue Twitter::Error::NotFound => e
+    puts "Not found: id"
+    msg.delete
   rescue Twitter::Error::TooManyRequests
     puts "Rate limit exceeded"
     break
