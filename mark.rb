@@ -15,8 +15,8 @@ def bad?(id)
 
   puts "https://twitter.com/account/redirect_by_id/#{id}: T #{tweet_count} F #{followers_count}"
 
-  (tweet_count < 10) ||
-  (followers_count < 10)
+  (tweet_count < 100) ||
+  (followers_count < 100)
 end
 
 i = 0
