@@ -3,13 +3,14 @@ require 'iron_mq'
 
 @ironmq = IronMQ::Client.new
 
-@queue = @ironmq.queue("peeps")
-
+queue = @ironmq.queue(params["queue"])
+method = params["method"]
 target = params["target"]
-puts "Marking followers of #{target}"
 
-T.follower_ids(target).each_slice(1000) do |ids|
-  puts "Queuing #{ids.length} ids to follow."
+puts "Marking #{method} of #{target} as #{queue}"
+
+T.send(method, target).each_slice(1000) do |ids|
+  puts "Queuing #{ids.length} ids."
 
   messages = ids.map do |id|
     {
@@ -17,5 +18,5 @@ T.follower_ids(target).each_slice(1000) do |ids|
     }
   end
 
-  @queue.post messages
+  queue.post messages
 end

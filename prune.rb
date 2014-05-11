@@ -1,26 +1,23 @@
 require "./setup"
 require 'iron_mq'
 
-@ironmq = IronMQ::Client.new
-@queue = @ironmq.queue("good_follows")
+ironmq = IronMQ::Client.new
+queue = ironmq.queue("bad_follows")
 
 i = 0
-while i < 15 do
-  msg = @queue.get
+while (i < 15) && (msg = queue.get) do
   id = msg.body.to_i
 
-  puts "Following: #{id}"
+  puts "Unfollowing: #{id}"
 
   begin
-    T.follow(id)
+    T.unfollow(id)
     msg.delete
     i += 1
-    puts "Followed: #{id}"
+    puts "Unfollowed: #{id}"
   rescue Twitter::Error::Forbidden => e
-    if e.message.match /You've already requested to follow/
-      puts "Already following: #{id}"
-      msg.delete
-    end
+    puts e.message
+    msg.delete
   rescue Twitter::Error::NotFound => e
     puts "Not found: id"
     msg.delete
